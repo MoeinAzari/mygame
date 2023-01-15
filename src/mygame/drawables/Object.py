@@ -75,17 +75,34 @@ class Object(object) :
     def x( self ):
         return self.__rect.x
 
+    @x.setter
+    def x( self,new_x ):
+        self.margined_rect.x = new_x
+
     @property
     def y( self ) :
         return self.__rect.y
+
+    @y.setter
+    def y( self, new_y ) :
+        self.margined_rect.y = new_y
 
     @property
     def width( self ) :
         return self.__rect.width
 
+
+    @width.setter
+    def width( self, new_width ) :
+        self.margined_rect.width = new_width
+
     @property
     def height( self ) :
         return self.__rect.height
+
+    @height.setter
+    def height( self, new_height ) :
+        self.margined_rect.height = new_height
 
     @property
     def margined_rect( self ):
