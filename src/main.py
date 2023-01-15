@@ -28,7 +28,7 @@ cont.color = [i.lerp(Color(255,255,0),0.1) for i in
 cont.margin = 10, 10, 10, 10
 cont.border = 5, 5, 5, 5
 cont.padding = 20, 20, 20, 20
-
+cont.update_surface()
 def print_objects():
     print("Container {")
     for i in cont.object_list:
@@ -63,6 +63,7 @@ while not window.should_quit :
 
     if K_q in window.keyboard_pressed_keys:
         cont.object_list.clear()
+        cont.update()
 
     # if K_UP in window.keyboard_held_keys: adjust_pos.y -= adjust_step
     # if K_DOWN in window.keyboard_held_keys : adjust_pos.y += adjust_step
@@ -75,19 +76,19 @@ while not window.should_quit :
 
     if K_UP in window.keyboard_held_keys:
         cont.y -= adjust_step
-        should_update = True
+        # should_update = True
 
     if K_DOWN in window.keyboard_held_keys :
         cont.y += adjust_step
-        should_update = True
+        # should_update = True
 
     if K_RIGHT in window.keyboard_held_keys :
         cont.x += adjust_step
-        should_update = True
+        # should_update = True
 
     if K_LEFT in window.keyboard_held_keys :
         cont.x -= adjust_step
-        should_update = True
+        # should_update = True
 
     if K_LSHIFT in window.keyboard_held_keys:
         if K_UP in window.keyboard_held_keys:
@@ -107,7 +108,7 @@ while not window.should_quit :
 
     if should_update:
         if should_recenter: cont.margined_rect.center = last_rect.center
-        cont.sync_objects()
+        cont.update()
 
     window.check_events()
     window.render_screen()

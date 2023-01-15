@@ -11,24 +11,42 @@ class Container(Object):
     def __init__(self,rect:Rect):
         super(Container, self).__init__(rect)
         self.object_list :list[Sprite] = []
+        self.surface:Optional[None,pg.surface.Surface] = None
+        self.update_surface()
+
+    def update( self ):
 
 
-    def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
-        margined_surface = pg.surface.Surface(self.margined_rect.size)
+        self.sync_objects()
+        self.update_surface()
+
+
+
+    def update_surface( self ):
+
+
+        self.surface = pg.surface.Surface(self.margined_rect.size)
         content_surface = pg.surface.Surface(self.content_rect.size).convert_alpha()
         content_surface.fill(ColorConstants.GLASS)
 
-        super(Container, self).render(margined_surface,self.margined_rect.pos.transform(mult_xy=-1))
-        for i in self.object_list:
-            i.render(content_surface,self.content_rect.pos.transform(mult_xy=-1))
+        super(Container, self).render(self.surface,
+            self.margined_rect.pos.transform(mult_xy=-1))
 
-        margined_surface.blit(content_surface,self.content_rect.pos.join(
-            self.margined_rect.pos.transform(mult_xy=-1)
-        ))
+        for i in self.object_list :
+            i.render(content_surface, self.content_rect.pos.transform(mult_xy=-1))
 
-        surface.blit(margined_surface,self.margined_rect.pos.join(pos_adjust))
+        self.surface.blit(content_surface,
+            self.content_rect.pos.join(self.margined_rect.pos.transform(mult_xy=-1)))
+
+        # self.surface.blit(self.surface, self.margined_rect.pos)
+
+
+
+    def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
+        surface.blit(self.surface,self.margined_rect.pos)
 
     def resize_objects( self,scale:float ):
+
 
         for i in self.object_list:
 
@@ -38,9 +56,11 @@ class Container(Object):
             if type(i) == Sprite:
                 i.update()
 
-        self.sync_objects()
+        self.update()
 
     def create_object( self,object_size:Pos ):
+
+
         new_sprite = Sprite(Rect(self.content_rect.x,self.content_rect.y
                                     ,object_size.x,object_size.y))
         zero = 0,0,0,0
@@ -62,9 +82,10 @@ class Container(Object):
 
         self.object_list.append(new_sprite)
 
-        self.sync_objects()
+        self.update()
 
     def sync_objects( self ):
+
         pos = self.content_rect.pos.copy()
 
         last_line_max_height = 0
@@ -79,8 +100,10 @@ class Container(Object):
                         last_line_max_height = i.height
                 else:
                     pos.x = self.content_rect.x
-                    last_line_max_height = i.height
                     pos.y += last_line_max_height
+                    last_line_max_height = i.height
+            else:
+                last_line_max_height = i.height
 
             i.margined_rect.reset_pos(pos=pos)
 
