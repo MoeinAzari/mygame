@@ -1,5 +1,6 @@
 import pygame as pg
 from typing import Optional
+
 from .Object import Object
 from .Sprite import Sprite
 from ..structures.Rect import Rect
@@ -13,12 +14,19 @@ class Container(Object):
 
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
-        temp_surface = pg.surface.Surface(self.margined_rect.size)
-        super(Container, self).render(temp_surface,self.margined_rect.pos.transform(mult_xy=-1))
-        for i in self.object_list:
-            i.render(temp_surface,self.margined_rect.pos.transform(mult_xy=-1))
+        margined_surface = pg.surface.Surface(self.margined_rect.size)
+        content_surface = pg.surface.Surface(self.content_rect.size).convert_alpha()
+        content_surface.fill(ColorConstants.GLASS)
 
-        surface.blit(temp_surface,self.margined_rect.pos.join(pos_adjust))
+        super(Container, self).render(margined_surface,self.margined_rect.pos.transform(mult_xy=-1))
+        for i in self.object_list:
+            i.render(content_surface,self.content_rect.pos.transform(mult_xy=-1))
+
+        margined_surface.blit(content_surface,self.content_rect.pos.join(
+            self.margined_rect.pos.transform(mult_xy=-1)
+        ))
+
+        surface.blit(margined_surface,self.margined_rect.pos.join(pos_adjust))
 
     def resize_objects( self,scale:float ):
 
