@@ -50,6 +50,11 @@ class Object(object) :
         self.border_top_width = 0
         self.border_bottom_width = 0
 
+        self.content_min_width = 0
+        self.content_min_height = 0
+        self.content_max_width = -1
+        self.content_max_height = -1
+
         self.color = colors.BLUE,colors.BLACK,colors.GREEN,colors.WHITE
 
 
@@ -91,10 +96,11 @@ class Object(object) :
     def width( self ) :
         return self.__rect.width
 
-
     @width.setter
     def width( self, new_width ) :
-        self.margined_rect.width = new_width
+        if new_width - self.content_min_width >= self.horizontal_space:
+            if new_width <= self.content_max_width or self.content_max_width == -1:
+                self.margined_rect.width = new_width
 
     @property
     def height( self ) :
@@ -102,7 +108,9 @@ class Object(object) :
 
     @height.setter
     def height( self, new_height ) :
-        self.margined_rect.height = new_height
+        if new_height - self.content_min_height >= self.vertical_space :
+            if new_height <= self.content_max_height or self.content_max_height == -1 :
+                self.margined_rect.height = new_height
 
     @property
     def margined_rect( self ):
@@ -182,6 +190,18 @@ class Object(object) :
     def border( self, new_border: tuple[int, int, int, int] ) :
         self.border_left_width, self.border_top_width = new_border[:2]
         self.border_right_width, self.border_bottom_width = new_border[2 :]
+
+    @property
+    def horizontal_space( self ):
+        return self.border_left_width + self.border_right_width +\
+                    self.padding_left + self.padding_right + \
+                        self.margin_left + self.margin_right
+
+    @property
+    def vertical_space( self ) :
+        return self.border_top_width + self.border_bottom_width + \
+                    self.padding_top + self.padding_bottom +\
+                        self.margin_top + self.margin_bottom
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ) :
         if pos_adjust is None: pos_adjust = Pos(0,0)

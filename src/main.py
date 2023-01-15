@@ -69,6 +69,9 @@ while not window.should_quit :
     # if K_RIGHT in window.keyboard_held_keys : adjust_pos.x += adjust_step
     # if K_LEFT in window.keyboard_held_keys : adjust_pos.x -= adjust_step
     should_update = False
+    should_recenter = False
+
+    last_rect = cont.margined_rect.copy()
 
     if K_UP in window.keyboard_held_keys:
         cont.y -= adjust_step
@@ -88,25 +91,22 @@ while not window.should_quit :
 
     if K_LSHIFT in window.keyboard_held_keys:
         if K_UP in window.keyboard_held_keys:
-            cont.margined_rect.height += adjust_step / 2
-            should_update = True
-
+            cont.height += adjust_step / 2
+            should_update = should_recenter = True
         if K_DOWN in window.keyboard_held_keys:
-            cont.margined_rect.height -= adjust_step
-            should_update = True
+            cont.height -= adjust_step
+            should_update = should_recenter = True
 
         if K_RIGHT in window.keyboard_held_keys:
-            cont.margined_rect.width += adjust_step
-            should_update = True
+            cont.width += adjust_step
+            should_update = should_recenter = True
 
         if K_LEFT in window.keyboard_held_keys:
-            cont.margined_rect.width -= adjust_step
-            should_update = True
-
+            cont.width -= adjust_step
+            should_update = should_recenter = True
 
     if should_update:
-        print(cont.margined_rect)
-        cont.margined_rect.center = window.margined_rect.center
+        if should_recenter: cont.margined_rect.center = last_rect.center
         cont.sync_objects()
 
     window.check_events()
