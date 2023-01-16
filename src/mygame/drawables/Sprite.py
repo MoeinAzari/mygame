@@ -26,9 +26,7 @@ class Sprite(Object):
 
         if found_index != -1:
             self.raw = Sprite.already_loaded_list[found_index][1]
-            print('already loaded')
         else:
-            print('new image')
             self.raw = pg.image.load(self.path)
             Sprite.already_loaded_list.append((self.path,self.raw))
 

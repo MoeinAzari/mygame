@@ -6,7 +6,14 @@ from ..structures.Enumerator import Enumerator
 
 
 class EventConstants :
+
     Enumerator.reset("EventHolder.Constants")
+
+    MOUSE_LEFT = 1
+    MOUSE_MIDDLE = 2
+    MOUSE_RIGHT = 3
+    MOUSE_FORWARD = 4
+    MOUSE_BACK = 5
 
     MOUSE_POS = Enumerator.next("MOUSE_POS")
     MOUSE_KEYS = Enumerator.next("MOUSE_KEYS")
@@ -47,6 +54,13 @@ class EventHolder:
         if super_args is not None:
             super(EventHolder, self).__init__(super_args)
 
+    def __str__( self ):
+        text = "\nEventHolder {\n"
+        for i in self.__dict__:
+            text += "\t"+i+" = "+str(self.__dict__[i])+"\n"
+
+        return text + "\n}"
+
     @property
     def mouse_pos( self ):
         return self.__mouse_pos
@@ -85,11 +99,11 @@ class EventHolder:
 
     @property
     def mouse_pressed_keys( self ) :
-        return self.__keyboard_pressed_keys
+        return self.__mouse_pressed_keys
 
     @property
     def mouse_released_keys( self ) :
-        return self.__keyboard_released_keys
+        return self.__mouse_released_keys
 
 
     @property

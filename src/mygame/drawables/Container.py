@@ -3,6 +3,7 @@ from typing import Optional
 
 from .Object import Object
 from .Sprite import Sprite
+from ..os.EventHolder import EventHolder,EventConstants
 from ..structures.Rect import Rect
 from ..structures.Pos import Pos
 from ..structures.Color import Color,ColorConstants
@@ -12,7 +13,9 @@ class Container(Object):
         super(Container, self).__init__(rect)
         self.object_list :list[Sprite] = []
         self.surface:Optional[None,pg.surface.Surface] = None
+        self.event_holder:EventHolder = None
         self.update_surface()
+
 
     def update( self ):
 
@@ -40,6 +43,14 @@ class Container(Object):
 
         # self.surface.blit(self.surface, self.margined_rect.pos)
 
+
+    def check_events( self ):
+        if self.content_rect.collidepoint(self.event_holder.mouse_pos):
+            if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
+                print('real mouse pos',self.event_holder.mouse_pos,
+                            'relative mouse pos',self.event_holder.mouse_pos.join(
+                        self.content_rect.pos.transform(mult_xy=-1)
+                    ))
 
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):

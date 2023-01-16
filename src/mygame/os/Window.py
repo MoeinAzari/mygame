@@ -11,15 +11,18 @@ from ..drawables.Object import Object
 from ..structures.Color import ColorConstants as colors
 
 
-class Window(EventHolder,Object):
+class Window(Object):
     def __init__(self,window_size:Pos,content_size:Pos):
-        super(Window, self).__init__(super_args=Rect(0,0,int(window_size.x),int(window_size.y)))
-        self.listen_list = EventConstants.ALL_EVENTS()
+        super(Window, self).__init__(Rect(0,0,int(window_size.x),int(window_size.y)))
         self.surface = pg.display.set_mode(self.margined_rect.size, RESIZABLE)
         self.window_content_size = content_size
         self.color = colors.DEAD_BLUE, colors.HOT_RED, colors.HAPPY_BLUE, colors.GRAY_SKY
         self.adjust(window_size)
+        self.event_holder: Optional[EventHolder,None] = EventHolder()
+        self.event_holder.listen_list = EventConstants.ALL_EVENTS()
         self.has_boundaries = False
+
+
 
 
     def adjust( self,window_new_size:Pos ):
@@ -50,34 +53,34 @@ class Window(EventHolder,Object):
     def get_events( self ,event_list:list or None=None):
         if event_list is None: event_list = pg.event.get()
 
-        EventHolder.get_events(self,event_list)
+        EventHolder.get_events(self.event_holder,event_list)
 
-        if K_ESCAPE in self.keyboard_pressed_keys:
-            self.should_quit = True
+        if K_ESCAPE in self.event_holder.keyboard_pressed_keys:
+            self.event_holder.should_quit = True
 
-        if self.window_size_changed:
-            self.adjust(self.window_size)
+        if self.event_holder.window_size_changed:
+            self.adjust(self.event_holder.window_size)
 
 
     def check_events( self ):
         illegal_size = False
 
-        if self.window_size.x == -1 and self.window_size.y == -1:
-            self.window_size = Pos(as_tuple=self.surface.get_size())
+        if self.event_holder.window_size.x == -1 and self.event_holder.window_size.y == -1:
+            self.event_holder.window_size = Pos(as_tuple=self.surface.get_size())
 
-        new_x = self.window_size.x
-        new_y = self.window_size.y
+        new_x = self.event_holder.window_size.x
+        new_y = self.event_holder.window_size.y
 
-        if self.window_size.x < self.window_content_size.x:
+        if self.event_holder.window_size.x < self.window_content_size.x:
             illegal_size = True
             new_x = self.window_content_size.x
 
-        if self.window_size.y < self.window_content_size.y:
+        if self.event_holder.window_size.y < self.window_content_size.y:
             illegal_size = True
             new_y = self.window_content_size.y
 
         if illegal_size and self.has_boundaries:
-            self.window_size.reset(new_x,new_y)
+            self.event_holder.window_size.reset(new_x,new_y)
             self.surface = pg.display.set_mode([new_x,new_y],RESIZABLE)
             self.adjust(Pos(as_tuple=self.surface.get_size()))
 
