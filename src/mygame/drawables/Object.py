@@ -113,7 +113,7 @@ class Object(object) :
                 self.margined_rect.height = new_height
 
     @property
-    def margined_rect( self ):
+    def margined_rect( self ) -> Rect:
         return self.__rect
 
     @margined_rect.setter

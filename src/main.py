@@ -122,7 +122,6 @@ while not window.event_holder.should_quit :
     window.render_screen()
     cont.render(window.surface,adjust_pos)
 
-
     window.update()
     clock.tick(fps)
 
