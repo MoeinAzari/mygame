@@ -14,6 +14,7 @@ class Container(Object):
         self.object_list :list[Optional[Sprite]] = []
         self.surface:Optional[pg.surface.Surface] = None
         self.event_holder:Optional[EventHolder] = None
+        self.all_lines_height:Optional[float] = 0
 
         self.update_surface()
 
@@ -26,7 +27,8 @@ class Container(Object):
 
 
 
-    def update_surface( self ):
+    def update_surface( self , pos_adjust:Pos = None):
+        if pos_adjust is None: pos_adjust = Pos(0,0)
 
 
         self.surface = pg.surface.Surface(self.margined_rect.size)
@@ -37,15 +39,14 @@ class Container(Object):
             self.margined_rect.pos.transform(mult_xy=-1))
 
         for i in self.object_list :
-            i.render(content_surface, self.content_rect.pos.transform(mult_xy=-1))
+            i.render(content_surface, self.content_rect.pos.transform(mult_xy=-1).join(pos_adjust))
 
         self.surface.blit(content_surface,
             self.content_rect.pos.join(self.margined_rect.pos.transform(mult_xy=-1)))
 
         # self.surface.blit(self.surface, self.margined_rect.pos)
 
-
-    def check_events( self ):
+    def get_events( self ):
         if self.content_rect.collidepoint(self.event_holder.mouse_pos):
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
                 c = 0
@@ -56,9 +57,13 @@ class Container(Object):
 
                     c+=1
 
+    def check_events( self ):
+        ...
+
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
-        surface.blit(self.surface,self.margined_rect.pos)
+        if pos_adjust is None: pos_adjust = Pos(0,0)
+        surface.blit(self.surface,self.margined_rect.pos.join(pos_adjust))
 
     def resize_objects( self,scale:float ):
 
@@ -103,7 +108,9 @@ class Container(Object):
 
         pos = self.content_rect.pos.copy()
 
+        self.all_lines_height = 0
         last_line_max_height = 0
+        lines_count = 0
 
         last_i = None
         for i in self.object_list:
@@ -113,15 +120,21 @@ class Container(Object):
                     pos.x += last_i.width
                     if i.height > last_line_max_height :
                         last_line_max_height = i.height
+                        if lines_count == 1:
+                            self.all_lines_height = last_line_max_height
                 else:
+                    lines_count += 1
                     pos.x = self.content_rect.x
                     pos.y += last_line_max_height
                     last_line_max_height = i.height
+                    self.all_lines_height += last_line_max_height
             else:
                 last_line_max_height = i.height
+                self.all_lines_height += last_line_max_height
+                lines_count += 1
 
             i.margined_rect.reset_pos(pos=pos)
-
             last_i = i
+
 
 
