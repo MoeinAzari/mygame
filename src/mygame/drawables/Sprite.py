@@ -10,11 +10,30 @@ from ..structures.Surface import Surface
 from .Object import Object
 
 class Sprite(Object):
+    already_loaded_list:list[tuple[str,pg.surface.Surface]] = []
+
     def __init__(self,rect:Rect):
         super(Sprite, self).__init__(rect)
 
         self.path = "../assets/openme.jpg"
-        self.raw = pg.image.load(self.path)
+
+        found_index = -1
+        c = 0
+        for i in Sprite.already_loaded_list:
+            if i[0] == self.path:
+                found_index = c
+            c+=1
+
+        if found_index != -1:
+            self.raw = Sprite.already_loaded_list[found_index][1]
+            print('already loaded')
+        else:
+            print('new image')
+            self.raw = pg.image.load(self.path)
+            Sprite.already_loaded_list.append((self.path,self.raw))
+
+
+
         self.transformed = self.raw.copy()
         self.transform_picture()
 
