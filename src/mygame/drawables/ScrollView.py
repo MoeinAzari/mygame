@@ -13,9 +13,9 @@ from ..structures.Color import Color,ColorConstants
 
 class ScrollView(Container):
     def __init__(self,rect:Rect):
-        super(ScrollView, self).__init__(rect)
         self.scroll_scale = 0
         self.scroll_step = 0.01
+        super(ScrollView, self).__init__(rect)
 
     @property
     def is_scrollable( self ):
@@ -51,15 +51,11 @@ class ScrollView(Container):
             if should_scroll:
                 self.update_surface(scroll_pos.transform(mult_xy=-1))
 
-
-
-
-
+    def update_surface( self , pos_adjust:Pos = None):
+        super(ScrollView, self).update_surface(Pos(0,-self.scroll_diff * self.scroll_scale ))
 
     def check_events( self ):
         super().check_events()
-
-
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
         super(ScrollView, self).render(surface, pos_adjust)

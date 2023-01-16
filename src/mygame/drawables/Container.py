@@ -19,11 +19,11 @@ class Container(Object):
         self.update_surface()
 
 
-    def update( self ):
-
+    def update( self , pos_adjust:Pos = None ):
+        if pos_adjust is None: pos_adjust = Pos(0,0)
 
         self.sync_objects()
-        self.update_surface()
+        self.update_surface(pos_adjust)
 
 
 
