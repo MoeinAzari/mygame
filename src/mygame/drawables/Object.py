@@ -83,7 +83,7 @@ class Object(object) :
 
     def check_events( self ):
         if self.was_changed:
-            self.update_surface()
+            self.update()
 
 
     
@@ -233,7 +233,7 @@ class Object(object) :
 
 
 
-    def update_surface( self ):
+    def update( self ):
         self.was_changed = False
 
         self.surface = pg.surface.Surface(self.margined_rect.size).convert_alpha()
@@ -264,6 +264,22 @@ class Object(object) :
             pg.draw.rect(surface,self.bordered_color,self.bordered_rect)
             pg.draw.rect(surface,self.padded_color,self.padded_rect)
             pg.draw.rect(surface,self.content_color,self.content_rect)
+
+    def render_at( self,surface:pg.surface.Surface,at:Pos ):
+        if self.has_surface and self.surface is not None:
+            surface.blit(self.surface,at)
+        else:
+            pg.draw.rect(surface,self.margined_color
+                ,self.margined_rect.copy().reset_pos(at.x,at.y))
+
+            pg.draw.rect(surface,self.bordered_color
+                ,self.bordered_rect.copy().reset_pos(at.x,at.y))
+
+            pg.draw.rect(surface,self.padded_color
+                ,self.padded_rect.copy().reset_pos(at.x,at.y))
+
+            pg.draw.rect(surface,self.content_color
+                ,self.content_rect.copy().reset_pos(at.x,at.y))
 
 
 
