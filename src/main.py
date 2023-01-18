@@ -22,7 +22,7 @@ content_size = Pos(800,600)
 window_size = Pos(1100,800)
 window = Window(window_size, content_size)
 
-obj = Object(Rect(0, 0, int(content_size.x), int(content_size.y)))
+obj = Container(Rect(0, 0, int(content_size.x), int(content_size.y)))
 
 obj.padding = 10,10,10,10
 obj.margin = 50,50,50,50
@@ -34,8 +34,8 @@ obj.bordered_color = ColorConstants.BLACK
 obj.content_color = ColorConstants.DEAD_YELLOW
 
 obj.has_surface = True
-
-obj.update_surface()
+obj.was_changed = True
+# obj.update_surface()
 
 
 
@@ -52,20 +52,20 @@ while not window.event_holder.should_quit :
     if window.event_holder.window_size_changed or just_started:
         obj.margined_rect = window.content_rect.copy()
 
-    # if K_a in window.event_holder.keyboard_held_keys:
-    #     obj.create_object(Pos(rand(50,50),rand(50,50)))
-    # if K_s in window.event_holder.keyboard_pressed_keys:
-    #     cube = rand(40,40)
-    #     obj.create_object(Pos(cube,cube))
-    # if K_d in window.event_holder.keyboard_held_keys or K_c in\
-    #         window.event_holder.keyboard_pressed_keys:
-    #     obj.resize_objects(0.95)
-    # if K_f in window.event_holder.keyboard_held_keys or K_v in\
-    #         window.event_holder.keyboard_pressed_keys:
-    #     obj.resize_objects(1.05)
-    # if K_q in window.event_holder.keyboard_pressed_keys:
-    #     obj.object_list.clear()
-    #     obj.update()
+    if K_a in window.event_holder.keyboard_held_keys:
+        obj.create_object(Pos(rand(50,50),rand(50,50)))
+    if K_s in window.event_holder.keyboard_pressed_keys:
+        cube = rand(40,40)
+        obj.create_object(Pos(cube,cube))
+    if K_d in window.event_holder.keyboard_held_keys or K_c in\
+            window.event_holder.keyboard_pressed_keys:
+        obj.resize_objects(0.95)
+    if K_f in window.event_holder.keyboard_held_keys or K_v in\
+            window.event_holder.keyboard_pressed_keys:
+        obj.resize_objects(1.05)
+    if K_q in window.event_holder.keyboard_pressed_keys:
+        obj.object_list.clear()
+        obj.update()
 
 
     should_update = False
