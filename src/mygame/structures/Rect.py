@@ -24,6 +24,19 @@ class Rect(pg_rect):
 
         return self
 
+    def join_me( self,rect ):
+        self.x += rect.x
+        self.y += rect.y
+        self.width += rect.width
+        self.height += rect.height
+        return self
+
+    def join( self ,rect):
+        return self.copy().join_me(rect)
+
+
+
+
     @property
     def as_tuple( self ):
         return self.x,self.y,self.width,self.height
