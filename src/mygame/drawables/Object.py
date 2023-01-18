@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 import pygame as pg
@@ -29,7 +30,9 @@ class Object(object) :
         self.__rect: Rect = rect
         self.surface: Optional[pg.surface.Surface] = None
         self.has_surface:bool = False
-        self.alpha = 200
+        self.__alpha = 200
+        self.was_updated:bool = False
+
 
         self.margined_color: Optional[Color,None] = None
         self.bordered_color: Optional[Color,None] = None
@@ -77,13 +80,32 @@ class Object(object) :
         self.padded_color = colors_[2]
         self.content_color = colors_[3]
 
+
+    def check_events( self ):
+        if self.was_updated:
+            print('I was changed',time.time())
+            self.update_surface()
+            self.was_updated = False
+
+    
+    @property
+    def alpha( self ):
+        return self.__alpha
+    
+    @alpha.setter
+    def alpha( self,new_alpha:int ):
+        if 0<=new_alpha<=255:
+            self.__alpha = new_alpha
+            self.was_updated = True
+
+
     @property
     def x( self ):
         return self.__rect.x
 
     @x.setter
     def x( self,new_x ):
-        self.margined_rect.x = new_x
+        self.__rect.x = new_x
 
     @property
     def y( self ) :
@@ -91,7 +113,7 @@ class Object(object) :
 
     @y.setter
     def y( self, new_y ) :
-        self.margined_rect.y = new_y
+        self.__rect.y = new_y
 
     @property
     def width( self ) :
@@ -101,6 +123,7 @@ class Object(object) :
     def width( self, new_width ) :
         if new_width - self.content_min_width >= self.horizontal_space:
             if new_width <= self.content_max_width or self.content_max_width == -1:
+                self.was_updated = True
                 self.margined_rect.width = new_width
 
     @property
@@ -111,6 +134,7 @@ class Object(object) :
     def height( self, new_height ) :
         if new_height - self.content_min_height >= self.vertical_space :
             if new_height <= self.content_max_height or self.content_max_height == -1 :
+                self.was_updated = True
                 self.margined_rect.height = new_height
 
     @property
@@ -119,7 +143,11 @@ class Object(object) :
 
     @margined_rect.setter
     def margined_rect( self,p_rect:Rect ):
-       self.__rect.reset(p_rect)
+        self.x = p_rect.x
+        self.y = p_rect.y
+        self.width = p_rect.width
+        self.height = p_rect.height
+
 
     @property
     def bordered_rect( self ):
@@ -228,12 +256,7 @@ class Object(object) :
 
     def render( self,surface:pg.surface.Surface) :
 
-        if self.has_surface:
-            self.update_surface()
-            # pg.draw.rect(surface, self.margined_color, self.margined_rect)
-            # pg.draw.rect(surface, self.bordered_color, self.bordered_rect)
-            # pg.draw.rect(surface, self.padded_color, self.padded_rect)
-            # pg.draw.rect(surface, self.content_color, self.content_rect)
+        if self.has_surface and self.surface is not None:
             surface.blit(self.surface,self.margined_rect.pos)
         else:
             pg.draw.rect(surface,self.margined_color,self.margined_rect)
