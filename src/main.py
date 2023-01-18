@@ -112,6 +112,7 @@ while not window.event_holder.should_quit :
 
     if should_update:
         if should_recenter: scroll_view.margined_rect.center = last_rect.center
+
         scroll_view.update()
 
     window.check_events()

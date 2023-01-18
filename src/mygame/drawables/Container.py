@@ -46,12 +46,15 @@ class Container(Object):
 
         # self.surface.blit(self.surface, self.margined_rect.pos)
 
-    def get_events( self ):
-        if self.content_rect.collidepoint(self.event_holder.mouse_pos):
+    def get_events( self ,pos_adjust:Pos = None):
+        if pos_adjust is None: pos_adjust = Pos(0,0)
+        mouse_pos = self.event_holder.mouse_pos.join(pos_adjust)
+
+        if self.content_rect.collidepoint(mouse_pos):
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
                 c = 0
                 for i in self.object_list:
-                    if i.margined_rect.collidepoint(self.event_holder.mouse_pos):
+                    if i.margined_rect.collidepoint(mouse_pos):
                         self.object_list.remove(i)
                         self.update()
 

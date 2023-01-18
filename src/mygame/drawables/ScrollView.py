@@ -26,15 +26,19 @@ class ScrollView(Container):
         if self.is_scrollable:
             return self.all_lines_height - self.content_rect.height
 
+        self.scroll_scale = 0
         return 0
 
 
-    def get_events( self ):
-        super().get_events()
+    def get_events( self,pos_adjust:Pos=None ):
+        if pos_adjust is None: pos_adjust = Pos(0,0)
+
+        scroll_pos = Pos(0, self.scroll_scale * self.scroll_diff)
+
+        super().get_events(scroll_pos.transform(mult_xy=-1))
 
         should_scroll = False
         if self.is_scrollable:
-            scroll_pos = Pos(0, self.scroll_scale * self.scroll_diff)
 
             if K_LCTRL in self.event_holder.keyboard_held_keys:
                 if K_UP in self.event_holder.keyboard_held_keys:
@@ -49,12 +53,17 @@ class ScrollView(Container):
                     should_scroll = True
 
             if should_scroll:
-                self.update_surface(scroll_pos.transform(mult_xy=-1))
+                self.update(scroll_pos.transform(mult_xy=-1))
+
+    def update( self , pos_adjust:Pos = None ):
+        super(ScrollView, self).update(pos_adjust)
 
     def update_surface( self , pos_adjust:Pos = None):
-        super(ScrollView, self).update_surface(Pos(0,-self.scroll_diff * self.scroll_scale ))
+        super(ScrollView, self).update_surface(Pos(0, -self.scroll_scale * self.scroll_diff))
 
     def check_events( self ):
+        if self.scroll_scale < 0 or self.scroll_scale > 1:
+            print(self.scroll_scale,'WARNING!')
         super().check_events()
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
