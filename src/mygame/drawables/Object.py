@@ -226,7 +226,7 @@ class Object(object) :
             self.content_rect.copy().join(diff))
 
 
-    def render( self,surface:pg.surface.Surface,a=None) :
+    def render( self,surface:pg.surface.Surface) :
 
         if self.has_surface:
             self.update_surface()
