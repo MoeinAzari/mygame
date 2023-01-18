@@ -43,6 +43,15 @@ class Rect(pg_rect):
         self.x,self.y = x,y
         return self
 
+    def join_pos( self ,x:float=0,y:float=0,pos:Pos=None ):
+        x, y = int(x), int(y)
+
+        if pos is not None :
+            self.x,self.y = self.pos.join(pos)
+            return self
+
+        self.x,self.y = self.pos.join(Pos(x,y))
+        return self
 
     def transform_pos( self, sum_xy: float = 0, sum_y: float = None, mult_xy: float = 1,
             mult_y: float = None ) :
@@ -78,6 +87,16 @@ class Rect(pg_rect):
 
         self.reset_size(pos=copy_cat)
 
+        return self
+
+    def join_size( self ,x:float=0,y:float=0,pos:Pos=None ):
+        x, y = int(x), int(y)
+
+        if pos is not None :
+            self.x,self.y = self.size.join(pos)
+            return self
+
+        self.x,self.y = self.size.join(Pos(x,y))
         return self
 
     def reset_size( self, x: int = 0, y: int = 0, pos: Pos = None ) :
