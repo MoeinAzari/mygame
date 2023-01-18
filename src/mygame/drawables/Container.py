@@ -24,6 +24,9 @@ class Container(Object):
         self.sync_objects()
         super(Container, self).update()
         self.content_surface = pg.surface.Surface(self.content_rect.size).convert_alpha()
+        if self.has_surface:
+            self.content_surface.set_alpha(self.alpha)
+
         self.content_surface.fill(ColorConstants.GLASS)
 
         for i in self.object_list:
@@ -54,9 +57,7 @@ class Container(Object):
     def render( self,surface:pg.surface.Surface ):
         super(Container, self).render(surface)
         surface.blit(self.content_surface,self.content_rect)
-        if not self.has_surface:
-            pg.draw.line(surface, [0, 0, 0], self.margined_rect.pos,
-                self.margined_rect.size.join(self.margined_rect.pos))
+
 
 
     def resize_objects( self,scale:float ):

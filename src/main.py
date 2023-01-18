@@ -84,6 +84,7 @@ while not window.event_holder.should_quit :
             if obj.alpha < 50 : obj.alpha = 50
 
         if K_RETURN in window.event_holder.keyboard_pressed_keys:
+            obj.was_changed = True
             obj.has_surface = not obj.has_surface
 
     elif K_LSHIFT not in window.event_holder.keyboard_held_keys:
