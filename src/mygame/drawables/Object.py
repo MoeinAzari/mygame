@@ -208,7 +208,6 @@ class Object(object) :
         self.margin_left, self.margin_top = new_margin[:2]
         self.margin_right, self.margin_bottom = new_margin[2 :]
 
-
     @property
     def border( self ) -> tuple[int, int, int, int] :
         return self.border_left_width, self.border_top_width,\
@@ -220,17 +219,28 @@ class Object(object) :
         self.border_right_width, self.border_bottom_width = new_border[2 :]
 
     @property
+    def left_space(self):
+        return self.margin_left + self.border_left_width + self.padding_left
+
+    @property
+    def right_space( self ) :
+        return self.margin_right + self.border_right_width + self.padding_right
+
+    @property
+    def top_space( self ) :
+        return self.margin_top + self.border_top_width + self.padding_top
+
+    @property
+    def bottom_space( self ) :
+        return self.margin_bottom + self.border_bottom_width + self.padding_bottom
+
+    @property
     def horizontal_space( self ):
-        return self.border_left_width + self.border_right_width +\
-                    self.padding_left + self.padding_right + \
-                        self.margin_left + self.margin_right
+        return self.left_space + self.right_space
 
     @property
     def vertical_space( self ) :
-        return self.border_top_width + self.border_bottom_width + \
-                    self.padding_top + self.padding_bottom +\
-                        self.margin_top + self.margin_bottom
-
+        return self.top_space + self.bottom_space
 
 
     def update( self ):
@@ -269,17 +279,22 @@ class Object(object) :
         if self.has_surface and self.surface is not None:
             surface.blit(self.surface,at)
         else:
+            margined_pos = at.copy()
+            bordered_pos = at.transform(self.margin_left,self.margin_top)
+            padded_pos = bordered_pos.transform(self.border_left_width,self.border_top_width)
+            content_pos = padded_pos.transform(self.padding_left,self.padding_top)
+
             pg.draw.rect(surface,self.margined_color
-                ,self.margined_rect.copy().reset_pos(at.x,at.y))
+                ,self.margined_rect.copy().reset_pos(pos=margined_pos))
 
             pg.draw.rect(surface,self.bordered_color
-                ,self.bordered_rect.copy().reset_pos(at.x,at.y))
+                ,self.bordered_rect.copy().reset_pos(pos=bordered_pos))
 
             pg.draw.rect(surface,self.padded_color
-                ,self.padded_rect.copy().reset_pos(at.x,at.y))
+                ,self.padded_rect.copy().reset_pos(pos=padded_pos))
 
             pg.draw.rect(surface,self.content_color
-                ,self.content_rect.copy().reset_pos(at.x,at.y))
+                ,self.content_rect.copy().reset_pos(pos=content_pos))
 
 
 
