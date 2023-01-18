@@ -11,6 +11,7 @@ colors = ColorConstants
 
 # It could have been DrawableObject but that's not finger friendly
 class Object(object) :
+
     """
     "Object" contains the information about how something should be rendered
     on the screen.
@@ -22,13 +23,12 @@ class Object(object) :
     So the rectangular size of the content to be rendered is:
         content_width = rect.width - padding_horizontal + border_horizontal + margin_horizontal
         content_height = rect.height - padding_vertical + border_vertical + margin_vertical
-
     """
     def __init__( self, rect: Rect ) :
 
         self.__rect: Rect = rect
-
-        self.alpha_support:bool = False
+        self.surface: Optional[pg.surface.Surface] = None
+        self.has_surface:bool = False
 
         self.margined_color: Optional[Color,None] = None
         self.bordered_color: Optional[Color,None] = None
@@ -203,37 +203,46 @@ class Object(object) :
                     self.padding_top + self.padding_bottom +\
                         self.margin_top + self.margin_bottom
 
-    def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ) :
-        if pos_adjust is None: pos_adjust = Pos(0,0)
 
-        margined_rect = self.margined_rect.copy().transform_pos(pos_adjust.x,pos_adjust.y)
-        bordered_rect = self.bordered_rect.copy().transform_pos(pos_adjust.x,pos_adjust.y)
-        padded_rect = self.padded_rect.copy().transform_pos(pos_adjust.x,pos_adjust.y)
-        content_rect = self.content_rect.copy().transform_pos(pos_adjust.x,pos_adjust.y)
 
-        if self.alpha_support:
-            temp_surface = pg.surface.Surface(margined_rect.size).convert_alpha()
+    def update_surface( self ):
+        self.surface = pg.surface.Surface(self.margined_rect.size).convert_alpha()
+        self.surface.set_alpha(125)
 
-            diff = Pos(-self.x - pos_adjust.x, -self.y - pos_adjust.y)
+        diff = Rect(-self.x,-self.y,0,0)
 
-            pg.draw.rect(temp_surface, self.margined_color
-                            , margined_rect.copy().transform_pos(sum_xy=diff.x, sum_y=diff.y))
 
-            pg.draw.rect(temp_surface, self.bordered_color,
-                bordered_rect.copy().transform_pos(sum_xy=diff.x, sum_y=diff.y))
+        pg.draw.rect(self.surface, self.margined_color,
+            self.margined_rect.copy().join(diff))
 
-            pg.draw.rect(temp_surface, self.padded_color,
-                padded_rect.copy().transform_pos(sum_xy=diff.x, sum_y=diff.y))
+        pg.draw.rect(self.surface, self.bordered_color,
+            self.bordered_rect.copy().join(diff))
 
-            pg.draw.rect(temp_surface, self.content_color,
-                content_rect.copy().transform_pos(sum_xy=diff.x, sum_y=diff.y))
+        pg.draw.rect(self.surface, self.padded_color,
+            self.padded_rect.copy().join(diff))
 
-            surface.blit(temp_surface,margined_rect)
+        pg.draw.rect(self.surface, self.content_color,
+            self.content_rect.copy().join(diff))
+
+
+    def render( self,surface:pg.surface.Surface,a=None) :
+
+        if self.has_surface:
+            self.update_surface()
+            # pg.draw.rect(surface, self.margined_color, self.margined_rect)
+            # pg.draw.rect(surface, self.bordered_color, self.bordered_rect)
+            # pg.draw.rect(surface, self.padded_color, self.padded_rect)
+            # pg.draw.rect(surface, self.content_color, self.content_rect)
+            surface.blit(self.surface,self.margined_rect.pos)
         else:
-            pg.draw.rect(surface,self.margined_color,margined_rect)
-            pg.draw.rect(surface,self.bordered_color,bordered_rect)
-            pg.draw.rect(surface,self.padded_color,padded_rect)
-            pg.draw.rect(surface,self.content_color,content_rect)
+            pg.draw.rect(surface,self.margined_color,self.margined_rect)
+            pg.draw.rect(surface,self.bordered_color,self.bordered_rect)
+            pg.draw.rect(surface,self.padded_color,self.padded_rect)
+            pg.draw.rect(surface,self.content_color,self.content_rect)
+
+
+
+
 
     def all_attrs( self ) -> str :
         text = "Object {\n"
