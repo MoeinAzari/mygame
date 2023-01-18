@@ -29,6 +29,7 @@ class Object(object) :
         self.__rect: Rect = rect
         self.surface: Optional[pg.surface.Surface] = None
         self.has_surface:bool = False
+        self.alpha = 200
 
         self.margined_color: Optional[Color,None] = None
         self.bordered_color: Optional[Color,None] = None
@@ -207,7 +208,7 @@ class Object(object) :
 
     def update_surface( self ):
         self.surface = pg.surface.Surface(self.margined_rect.size).convert_alpha()
-        self.surface.set_alpha(125)
+        self.surface.set_alpha(self.alpha)
 
         diff = Rect(-self.x,-self.y,0,0)
 

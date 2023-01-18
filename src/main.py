@@ -75,7 +75,21 @@ while not window.event_holder.should_quit :
 
     last_rect = obj.margined_rect.copy()
 
-    if K_LSHIFT not in window.event_holder.keyboard_held_keys:
+    if K_LCTRL in window.event_holder.keyboard_held_keys:
+        if K_UP in window.event_holder.keyboard_held_keys:
+            obj.alpha += 3
+            if obj.alpha > 255: obj.alpha = 255
+            # should_update = True
+
+        if K_DOWN in window.event_holder.keyboard_held_keys :
+            obj.alpha -= 3
+            if obj.alpha < 50 : obj.alpha = 50
+
+        if K_RETURN in window.event_holder.keyboard_pressed_keys:
+            obj.has_surface = not obj.has_surface
+
+
+    elif K_LSHIFT not in window.event_holder.keyboard_held_keys:
         if K_UP in window.event_holder.keyboard_held_keys:
             obj.y -= adjust_step
             # should_update = True
