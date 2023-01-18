@@ -72,7 +72,7 @@ class Sprite(Object):
 
     def render_at( self,surface:pg.surface.Surface,at:Pos ):
         super(Sprite, self).render_at(surface, at)
-        surface.blit(self.transformed,at.join(at.join(Pos(self.left_space,self.top_space))))
+        surface.blit(self.transformed,at.join(Pos(self.left_space,self.top_space)))
 
 
 
