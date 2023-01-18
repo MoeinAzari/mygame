@@ -31,7 +31,7 @@ class Object(object) :
         self.surface: Optional[pg.surface.Surface] = None
         self.has_surface:bool = False
         self.__alpha = 200
-        self.was_updated:bool = False
+        self.was_changed:bool = False
 
 
         self.margined_color: Optional[Color,None] = None
@@ -82,10 +82,9 @@ class Object(object) :
 
 
     def check_events( self ):
-        if self.was_updated:
-            print('I was changed',time.time())
+        if self.was_changed:
             self.update_surface()
-            self.was_updated = False
+
 
     
     @property
@@ -94,9 +93,9 @@ class Object(object) :
     
     @alpha.setter
     def alpha( self,new_alpha:int ):
-        if 0<=new_alpha<=255:
+        if 0<=new_alpha<=255 and self.has_surface:
             self.__alpha = new_alpha
-            self.was_updated = True
+            self.was_changed = True
 
 
     @property
@@ -123,7 +122,7 @@ class Object(object) :
     def width( self, new_width ) :
         if new_width - self.content_min_width >= self.horizontal_space:
             if new_width <= self.content_max_width or self.content_max_width == -1:
-                self.was_updated = True
+                self.was_changed = True
                 self.margined_rect.width = new_width
 
     @property
@@ -134,7 +133,7 @@ class Object(object) :
     def height( self, new_height ) :
         if new_height - self.content_min_height >= self.vertical_space :
             if new_height <= self.content_max_height or self.content_max_height == -1 :
-                self.was_updated = True
+                self.was_changed = True
                 self.margined_rect.height = new_height
 
     @property
@@ -235,6 +234,8 @@ class Object(object) :
 
 
     def update_surface( self ):
+        self.was_changed = False
+
         self.surface = pg.surface.Surface(self.margined_rect.size).convert_alpha()
         self.surface.set_alpha(self.alpha)
 
@@ -263,8 +264,6 @@ class Object(object) :
             pg.draw.rect(surface,self.bordered_color,self.bordered_rect)
             pg.draw.rect(surface,self.padded_color,self.padded_rect)
             pg.draw.rect(surface,self.content_color,self.content_rect)
-
-
 
 
 
