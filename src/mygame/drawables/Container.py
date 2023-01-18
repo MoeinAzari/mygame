@@ -12,6 +12,7 @@ class Container(Object):
     def __init__(self,rect:Rect):
         super(Container, self).__init__(rect)
         self.object_list :list[Optional[Sprite]] = []
+        self.content_surface: Optional[pg.surface.Surface] = None
 
         self.event_holder:Optional[EventHolder] = None
         self.all_lines_height:Optional[float] = 0
@@ -22,10 +23,12 @@ class Container(Object):
 
         self.sync_objects()
         super(Container, self).update()
+        self.content_surface = pg.surface.Surface(self.content_rect.size).convert_alpha()
+        self.content_surface.fill(ColorConstants.GLASS)
 
-        pg.draw.line(self.surface,[0,0,0],[0,0],self.margined_rect.size)
         for i in self.object_list:
-            i.render_at(self.surface,i.margined_rect.pos.join(self.margined_rect.pos.transform(
+            i.render_at(self.content_surface
+                ,i.margined_rect.pos.join(self.content_rect.pos.transform(
                 mult_xy=-1
             )))
 
@@ -50,6 +53,7 @@ class Container(Object):
 
     def render( self,surface:pg.surface.Surface ):
         super(Container, self).render(surface)
+        surface.blit(self.content_surface,self.content_rect)
         if not self.has_surface:
             pg.draw.line(surface, [0, 0, 0], self.margined_rect.pos,
                 self.margined_rect.size.join(self.margined_rect.pos))
