@@ -18,10 +18,11 @@ class Container(Object):
 
         self.event_holder:Optional[EventHolder] = None
         self.all_lines_height:Optional[float] = 0
-
+        self.objects_adjust_pos = Pos(0,0)
         self.update()
 
     def update( self ):
+
 
         self.sync_objects()
         super(Container, self).update()
@@ -35,10 +36,13 @@ class Container(Object):
             i.render_at(self.content_surface
                 ,i.margined_rect.pos.join(self.content_rect.pos.transform(
                 mult_xy=-1
-            )))
+            ).join(self.objects_adjust_pos)
+        ))
 
 
     def get_events( self ):
+
+
 
         mouse_pos = self.event_holder.mouse_pos
         if self.content_rect.collidepoint(mouse_pos):
@@ -46,7 +50,8 @@ class Container(Object):
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
                 c = 0
                 for i in self.object_list:
-                    if i.margined_rect.collidepoint(mouse_pos):
+                    if i.margined_rect.copy().join_pos(pos=self.objects_adjust_pos
+                    ).collidepoint(mouse_pos):
                         self.object_list.remove(i)
                         self.update()
                         break
@@ -61,6 +66,12 @@ class Container(Object):
     def render( self,surface:pg.surface.Surface ):
         super(Container, self).render(surface)
         surface.blit(self.content_surface,self.content_rect)
+
+        for i in self.object_list:
+            pg.draw.rect(surface,ColorConstants.WHITE,i.margined_rect.copy(
+
+            ).join_pos(pos=self.objects_adjust_pos)
+                ,width=5)
 
 
 

@@ -22,7 +22,7 @@ content_size = Pos(800,600)
 window_size = Pos(1100,800)
 window = Window(window_size, content_size)
 
-obj = Container(Rect(0, 0, int(content_size.x), int(content_size.y)))
+obj = ScrollView(Rect(0, 0, int(content_size.x), int(content_size.y)))
 
 obj.padding = 10,10,10,10
 obj.margin = 50,50,50,50

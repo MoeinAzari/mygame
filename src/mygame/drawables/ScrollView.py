@@ -30,36 +30,33 @@ class ScrollView(Container):
         return 0
 
 
-    def get_events( self,pos_adjust:Pos=None ):
-        if pos_adjust is None: pos_adjust = Pos(0,0)
-
-        scroll_pos = Pos(0, self.scroll_scale * self.scroll_diff)
-
-        super().get_events(scroll_pos.transform(mult_xy=-1))
+    def get_events( self ):
+        super().get_events()
 
         should_scroll = False
         if self.is_scrollable:
 
-            if K_LCTRL in self.event_holder.keyboard_held_keys:
-                if K_UP in self.event_holder.keyboard_held_keys:
-                    self.scroll_scale -= self.scroll_step
-                    if self.scroll_scale <= 0:
-                        self.scroll_scale = 0
-                    should_scroll = True
-                elif K_DOWN in self.event_holder.keyboard_held_keys:
-                    self.scroll_scale += self.scroll_step
-                    if self.scroll_scale > 1:
-                        self.scroll_scale = 1
-                    should_scroll = True
+            if K_RCTRL in self.event_holder.keyboard_held_keys :
+                self.scroll_scale -= self.scroll_step
+                if self.scroll_scale <= 0 :
+                    self.scroll_scale = 0
+                should_scroll = True
+            elif K_RSHIFT in self.event_holder.keyboard_held_keys :
+                self.scroll_scale += self.scroll_step
+                if self.scroll_scale > 1 :
+                    self.scroll_scale = 1
+                should_scroll = True
 
+            self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
             if should_scroll:
-                self.update(scroll_pos.transform(mult_xy=-1))
+                self.update()
+        else:
+            self.objects_adjust_pos.reset()
 
-    def update( self , pos_adjust:Pos = None ):
-        super(ScrollView, self).update(pos_adjust)
+    def update( self  ):
+        super(ScrollView, self).update()
 
-    def update_surface( self , pos_adjust:Pos = None):
-        super(ScrollView, self).update_surface(Pos(0, -self.scroll_scale * self.scroll_diff))
+
 
     def check_events( self ):
         if self.scroll_scale < 0 or self.scroll_scale > 1:
@@ -67,5 +64,5 @@ class ScrollView(Container):
         super().check_events()
 
     def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
-        super(ScrollView, self).render(surface, pos_adjust)
+        super(ScrollView, self).render(surface)
 
