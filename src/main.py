@@ -35,6 +35,10 @@ obj.content_color = ColorConstants.DEAD_YELLOW
 
 obj.has_surface = True
 obj.was_changed = True
+
+if type(obj) in [Container,ScrollView]:
+    obj.event_holder = window.event_holder
+
 # obj.update_surface()
 
 
@@ -48,6 +52,7 @@ adjust_step = 4
 
 while not window.event_holder.should_quit :
     window.get_events()
+    obj.get_events()
 
     if window.event_holder.window_size_changed or just_started:
         obj.margined_rect = window.content_rect.copy()
