@@ -105,6 +105,7 @@ class Object(object) :
     @x.setter
     def x( self,new_x ):
         self.__rect.x = new_x
+        self.was_changed = True
 
     @property
     def y( self ) :
@@ -113,6 +114,8 @@ class Object(object) :
     @y.setter
     def y( self, new_y ) :
         self.__rect.y = new_y
+        self.was_changed = True
+
 
     @property
     def width( self ) :

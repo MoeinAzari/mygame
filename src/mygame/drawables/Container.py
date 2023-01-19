@@ -1,3 +1,5 @@
+import time
+
 import pygame as pg
 from typing import Optional
 
@@ -40,14 +42,17 @@ class Container(Object):
 
         mouse_pos = self.event_holder.mouse_pos
         if self.content_rect.collidepoint(mouse_pos):
+
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
                 c = 0
                 for i in self.object_list:
                     if i.margined_rect.collidepoint(mouse_pos):
                         self.object_list.remove(i)
                         self.update()
+                        break
 
                     c+=1
+
 
     def check_events( self ):
         super(Container, self).check_events()
