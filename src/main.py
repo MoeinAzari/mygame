@@ -61,11 +61,15 @@ while not window.event_holder.should_quit :
     if K_F1 in window.event_holder.keyboard_pressed_keys:
         obj.update()
 
+    if K_F2 in window.event_holder.keyboard_pressed_keys:
+        obj.should_render_debug = not obj.should_render_debug
+
     if K_a in window.event_holder.keyboard_held_keys:
         obj.create_object(Pos(rand(50,50),rand(50,50)))
     if K_s in window.event_holder.keyboard_pressed_keys:
         cube = rand(40,40)
         obj.create_object(Pos(cube,cube))
+
     if K_d in window.event_holder.keyboard_held_keys or K_c in\
             window.event_holder.keyboard_pressed_keys:
         obj.resize_objects(0.95)

@@ -35,7 +35,6 @@ class ScrollView(Container):
 
         should_scroll = False
 
-        self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
         if self.is_scrollable:
             if K_RCTRL in self.event_holder.keyboard_held_keys :
                 self.scroll_scale -= self.scroll_step
@@ -56,7 +55,9 @@ class ScrollView(Container):
 
 
     def update( self  ):
-        super(ScrollView, self).update()
+        super(ScrollView, self).sync_objects()
+        self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
+        super(ScrollView, self).update_surface()
 
 
 

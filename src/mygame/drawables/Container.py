@@ -23,22 +23,22 @@ class Container(Object):
 
     def update( self ):
 
-
         self.sync_objects()
+        self.update_surface()
+
+
+    def update_surface( self ):
         super(Container, self).update()
+
         self.content_surface = pg.surface.Surface(self.content_rect.size).convert_alpha()
-        if self.has_surface:
+        if self.has_surface :
             self.content_surface.set_alpha(self.alpha)
 
         self.content_surface.fill(ColorConstants.GLASS)
 
-        for i in self.object_list:
-            i.render_at(self.content_surface
-                ,i.margined_rect.pos.join(self.content_rect.pos.transform(
-                mult_xy=-1
-            ).join(self.objects_adjust_pos)
-        ))
-
+        for i in self.object_list :
+            i.render_at(self.content_surface, i.margined_rect.pos.join(
+                self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos)))
 
     def get_events( self ):
         mouse_pos = self.event_holder.mouse_pos
@@ -80,7 +80,7 @@ class Container(Object):
 
 
     def resize_objects( self,scale:float ):
-
+        self.was_changed = True
 
         for i in self.object_list:
 
@@ -94,6 +94,7 @@ class Container(Object):
 
     def create_object( self,object_size:Pos ):
 
+        self.was_changed = True
 
         new_sprite = Sprite(Rect(0,0
                                     ,object_size.x,object_size.y))
