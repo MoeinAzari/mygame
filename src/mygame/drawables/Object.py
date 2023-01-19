@@ -33,6 +33,7 @@ class Object(object) :
         self.__alpha = 200
         self.was_changed:bool = False
 
+        self.should_render_debug:bool = False
 
         self.margined_color: Optional[Color,None] = None
         self.bordered_color: Optional[Color,None] = None
@@ -267,6 +268,9 @@ class Object(object) :
         pg.draw.rect(self.surface, self.content_color,
             self.content_rect.copy().join(diff))
 
+    def render_debug( self,surface:pg.surface.Surface ):
+        if self.should_render_debug :
+            ...
 
     def render( self,surface:pg.surface.Surface) :
 
@@ -277,6 +281,9 @@ class Object(object) :
             pg.draw.rect(surface,self.bordered_color,self.bordered_rect)
             pg.draw.rect(surface,self.padded_color,self.padded_rect)
             pg.draw.rect(surface,self.content_color,self.content_rect)
+
+
+
 
     def render_at( self,surface:pg.surface.Surface,at:Pos ):
         if self.has_surface and self.surface is not None:

@@ -41,37 +41,41 @@ class Container(Object):
 
 
     def get_events( self ):
-
-
-
         mouse_pos = self.event_holder.mouse_pos
         if self.content_rect.collidepoint(mouse_pos):
-
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
                 c = 0
                 for i in self.object_list:
                     if i.margined_rect.copy().join_pos(pos=self.objects_adjust_pos
-                    ).collidepoint(mouse_pos):
+                            ).collidepoint(mouse_pos):
                         self.object_list.remove(i)
-                        self.update()
+                        self.sync_objects()
+                        self.was_changed = True # Wierd problem
                         break
 
                     c+=1
 
 
     def check_events( self ):
+        # if self.was_changed:
+        #     self.sync_objects()
+
         super(Container, self).check_events()
 
+    def render_debug( self,surface:pg.surface.Surface ):
+        super(Container, self).render_debug(surface)
+        if self.should_render_debug:
+            for i in self.object_list:
+                pg.draw.rect(surface,ColorConstants.WHITE,i.margined_rect.copy(
+
+                ).join_pos(pos=self.objects_adjust_pos)
+                    ,width=5)
 
     def render( self,surface:pg.surface.Surface ):
         super(Container, self).render(surface)
         surface.blit(self.content_surface,self.content_rect)
 
-        for i in self.object_list:
-            pg.draw.rect(surface,ColorConstants.WHITE,i.margined_rect.copy(
 
-            ).join_pos(pos=self.objects_adjust_pos)
-                ,width=5)
 
 
 

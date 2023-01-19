@@ -35,6 +35,7 @@ obj.content_color = ColorConstants.DEAD_YELLOW
 
 obj.has_surface = True
 obj.was_changed = True
+obj.should_render_debug = True
 
 if type(obj) in [Container,ScrollView]:
     obj.event_holder = window.event_holder
@@ -56,6 +57,9 @@ while not window.event_holder.should_quit :
 
     if window.event_holder.window_size_changed or just_started:
         obj.margined_rect = window.content_rect.copy()
+
+    if K_F1 in window.event_holder.keyboard_pressed_keys:
+        obj.update()
 
     if K_a in window.event_holder.keyboard_held_keys:
         obj.create_object(Pos(rand(50,50),rand(50,50)))
@@ -130,6 +134,7 @@ while not window.event_holder.should_quit :
 
     window.render_screen()
     obj.render(window.surface)
+    obj.render_debug(window.surface)
 
     window.update()
     clock.tick(fps)
