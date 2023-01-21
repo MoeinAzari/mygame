@@ -35,7 +35,7 @@ obj.content_color = ColorConstants.DEAD_YELLOW
 
 obj.has_surface = True
 obj.was_changed = True
-obj.should_render_debug = True
+obj.should_render_debug = False
 
 if type(obj) in [Container,ScrollView]:
     obj.event_holder = window.event_holder

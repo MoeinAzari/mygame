@@ -43,14 +43,15 @@ class Container(Object):
     def get_events( self ):
         mouse_pos = self.event_holder.mouse_pos
         if self.content_rect.collidepoint(mouse_pos):
+
             if EventConstants.MOUSE_LEFT in self.event_holder.mouse_pressed_keys:
+
                 c = 0
                 for i in self.object_list:
                     if i.margined_rect.copy().join_pos(pos=self.objects_adjust_pos
                             ).collidepoint(mouse_pos):
                         self.object_list.remove(i)
-                        self.sync_objects()
-                        self.was_changed = True # Wierd problem
+                        self.was_changed = True
                         break
 
                     c+=1

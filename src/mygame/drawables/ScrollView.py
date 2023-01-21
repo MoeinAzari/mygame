@@ -1,3 +1,5 @@
+import time
+
 import pygame as pg
 from pygame.locals import *
 
@@ -14,7 +16,13 @@ from ..structures.Color import Color,ColorConstants
 class ScrollView(Container):
     def __init__(self,rect:Rect):
         self.scroll_scale = 0
-        self.scroll_step = 0.01
+        self.scroll_step = 0.004
+        self.wheel_timer_interval_initial = 0.3
+        self.wheel_timer_interval = self.wheel_timer_interval_initial
+        self.wheel_timer_interval_step = self.wheel_timer_interval * 0.1
+
+        self.scrolling_triggered = False
+        self.wheel_timer_last_time = time.time()
         super(ScrollView, self).__init__(rect)
 
     @property
@@ -35,16 +43,29 @@ class ScrollView(Container):
 
         should_scroll = False
 
-        if self.is_scrollable:
-            if K_RCTRL in self.event_holder.keyboard_held_keys :
+        if self.event_holder.mouse_wheel_triggered or self.scrolling_triggered:
+            if self.event_holder.mouse_wheel_triggered:
+                self.scrolling_triggered = True
+                self.wheel_timer_last_time = time.time()
+                if self.scrolling_triggered:
+                    self.wheel_timer_interval += self.wheel_timer_interval_step
+            else:
+                if self.wheel_timer_last_time + self.wheel_timer_interval < time.time():
+                    self.scrolling_triggered = False
+                    self.wheel_timer_interval = self.wheel_timer_interval_initial
+
+            if self.event_holder.mouse_wheel_rel < 0 :
                 self.scroll_scale -= self.scroll_step
                 if self.scroll_scale <= 0 :
                     self.scroll_scale = 0
+                    self.event_holder.mouse_wheel_triggered = False
                 should_scroll = True
-            elif K_RSHIFT in self.event_holder.keyboard_held_keys :
+            elif self.event_holder.mouse_wheel_rel > 0 :
                 self.scroll_scale += self.scroll_step
                 if self.scroll_scale > 1 :
                     self.scroll_scale = 1
+                    self.event_holder.mouse_wheel_triggered = False
+
                 should_scroll = True
 
             self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
