@@ -12,10 +12,10 @@ from .Object import Object
 class Sprite(Object):
     already_loaded_list:list[tuple[str,pg.surface.Surface]] = []
 
-    def __init__(self,rect:Rect):
+    def __init__(self,path:str,rect:Rect):
         super(Sprite, self).__init__(rect)
-
-        self.path = "../assets/openme.jpg"
+        self.offset:Pos = Pos(0,0)
+        self.path = path
 
         found_index = -1
         c = 0
@@ -40,10 +40,23 @@ class Sprite(Object):
         self.transform_picture()
 
     def transform_picture( self ):
-        try:
-            self.transformed = pg.transform.scale(self.raw,self.content_rect.size)
-        except ValueError as v:
-            print(v,self.content_rect.size)
+
+        by_width = Pos(pos=self.raw.get_size()).transform(
+                            mult_xy=self.content_rect.width / self.raw.get_width())
+
+        self.offset.reset(new_y=(self.content_rect.height - by_width.y) / 2)
+
+        successor = by_width
+
+        by_height = Pos(pos=self.raw.get_size()).transform(
+            mult_xy=self.content_rect.height / self.raw.get_height())
+
+        if by_width.y > self.content_rect.height:
+            self.offset.reset(new_x=(self.content_rect.width - by_height.x) / 2)
+            successor = by_height
+
+        self.transformed = pg.transform.scale(self.raw,successor)
+
 
     @Object.margined_rect.setter
     def margined_rect( self, new_margined_rect: Rect ) :
@@ -68,7 +81,7 @@ class Sprite(Object):
     def render( self, surface: pg.surface.Surface) :
 
         super().render(surface)
-        surface.blit(self.transformed,self.content_rect.pos)
+        surface.blit(self.transformed,self.content_rect.pos.join(self.offset))
 
     def render_at( self,surface:pg.surface.Surface,at:Pos ):
         super(Sprite, self).render_at(surface, at)
