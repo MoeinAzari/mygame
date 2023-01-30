@@ -50,6 +50,12 @@ class TextHolder (Object):
         surface.blit(self.text_surface,self.content_rect.pos)
 
 
+    def render_at( self,surface:pg.surface.Surface,at:Pos ):
+        super(TextHolder, self).render_at(surface,at)
+        surface.blit(self.text_surface, at.join(Pos(self.left_space,self.top_space)))
+
+
+
     def generate_texts( self ):
 
         self.__texts.clear()

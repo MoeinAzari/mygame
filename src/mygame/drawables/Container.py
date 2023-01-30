@@ -5,6 +5,8 @@ from typing import Optional
 
 from .Object import Object
 from .Sprite import Sprite
+from .TextHolder import TextHolder
+
 
 from ..os.EventHolder import EventHolder,EventConstants
 from ..structures.Rect import Rect
@@ -14,7 +16,7 @@ from ..structures.Color import Color,ColorConstants
 class Container(Object):
     def __init__(self,rect:Rect):
         super(Container, self).__init__(rect)
-        self.object_list :list[Optional[Sprite,(Pos,pg.surface.Surface)]] = []
+        self.object_list :list[Optional[Sprite,TextHolder]] = []
         self.content_surface: Optional[pg.surface.Surface] = None
 
         self.event_holder:Optional[EventHolder] = None
@@ -40,17 +42,12 @@ class Container(Object):
         for i in self.object_list :
 
 
-            if i.type == Sprite:
+            if type(i) in [Sprite,TextHolder,Object]:
+
                 at = i.margined_rect.pos.join(
                     self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos))
                 i.render_at(self.content_surface, at)
-            elif i.type == tuple[Pos,pg.surface.Surface]:
-                print('yaya')
-                at = i[0].join(
-                    self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos))
-                self.content_surface.blit(i[1],at.join(self.left_space,self.top_space))
-            else:
-                print(i.type)
+
 
 
     def get_events( self ):
@@ -110,12 +107,18 @@ class Container(Object):
 
         self.was_changed = True
 
-        new_sprite = Sprite(Rect(0,0
+
+
+        new_sprite = Object(Rect(0,0
                                     ,object_size.x,object_size.y))
 
+
+
+        new_sprite.margin = new_sprite.border = new_sprite.padding = 0,0,0,0
         new_sprite.margin = 5,5,5,5
         new_sprite.border = 5,5,5,5
         new_sprite.padding = 5,5,5,5
+
 
         new_sprite.content_max_width = 150
         new_sprite.content_max_height = 150
