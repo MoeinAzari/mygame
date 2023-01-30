@@ -5,4 +5,5 @@ Container = Container.Container
 Object = Object.Object
 ScrollView = ScrollView.ScrollView
 Sprite = Sprite.Sprite
+TextHolder = TextHolder.TextHolder
 

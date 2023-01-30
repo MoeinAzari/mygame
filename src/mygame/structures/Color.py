@@ -37,6 +37,20 @@ class Color(pg_color) :
     def as_tuple( self ):
         return self.r,self.g,self.b,self.a
 
+    def set_alpha( self ,alpha ):
+        if 0<=alpha<=255:
+            self.a = alpha
+
+        return self
+
+    def with_alpha( self ,alpha ):
+        copycat = self.copy()
+
+        if 0 <= alpha <= 255 :
+            copycat.a = alpha
+
+        return copycat
+
     def lerp_me( self,color,amount:float ):
         lerped_me = self.lerp(color,amount)
         self.r,self.g,self.b,self.a = lerped_me
