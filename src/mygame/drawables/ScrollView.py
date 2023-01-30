@@ -42,35 +42,35 @@ class ScrollView(Container):
         super().get_events()
 
         should_scroll = False
+        if self.content_rect.collidepoint(self.event_holder.mouse_pos):
+            if self.event_holder.mouse_wheel_triggered or self.scrolling_triggered:
+                if self.event_holder.mouse_wheel_triggered:
+                    self.scrolling_triggered = True
+                    self.wheel_timer_last_time = time.time()
+                    if self.scrolling_triggered:
+                        self.wheel_timer_interval += self.wheel_timer_interval_step
+                else:
+                    if self.wheel_timer_last_time + self.wheel_timer_interval < time.time():
+                        self.scrolling_triggered = False
+                        self.wheel_timer_interval = self.wheel_timer_interval_initial
 
-        if self.event_holder.mouse_wheel_triggered or self.scrolling_triggered:
-            if self.event_holder.mouse_wheel_triggered:
-                self.scrolling_triggered = True
-                self.wheel_timer_last_time = time.time()
-                if self.scrolling_triggered:
-                    self.wheel_timer_interval += self.wheel_timer_interval_step
-            else:
-                if self.wheel_timer_last_time + self.wheel_timer_interval < time.time():
-                    self.scrolling_triggered = False
-                    self.wheel_timer_interval = self.wheel_timer_interval_initial
+                if self.event_holder.mouse_wheel_rel < 0 :
+                    self.scroll_scale -= self.scroll_step
+                    if self.scroll_scale <= 0 :
+                        self.scroll_scale = 0
+                        self.event_holder.mouse_wheel_triggered = False
+                    should_scroll = True
+                elif self.event_holder.mouse_wheel_rel > 0 :
+                    self.scroll_scale += self.scroll_step
+                    if self.scroll_scale > 1 :
+                        self.scroll_scale = 1
+                        self.event_holder.mouse_wheel_triggered = False
 
-            if self.event_holder.mouse_wheel_rel < 0 :
-                self.scroll_scale -= self.scroll_step
-                if self.scroll_scale <= 0 :
-                    self.scroll_scale = 0
-                    self.event_holder.mouse_wheel_triggered = False
-                should_scroll = True
-            elif self.event_holder.mouse_wheel_rel > 0 :
-                self.scroll_scale += self.scroll_step
-                if self.scroll_scale > 1 :
-                    self.scroll_scale = 1
-                    self.event_holder.mouse_wheel_triggered = False
+                    should_scroll = True
 
-                should_scroll = True
-
-            self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
-            if should_scroll:
-                self.was_changed = True
+                self.objects_adjust_pos.y = -self.scroll_scale * self.scroll_diff
+                if should_scroll:
+                    self.was_changed = True
 
 
 
