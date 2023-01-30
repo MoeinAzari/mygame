@@ -18,7 +18,7 @@ class Window(Object):
         self.window_content_size = content_size
         self.color = colors.DEAD_BLUE, colors.HOT_RED, colors.HAPPY_BLUE, colors.GRAY_SKY
         self.adjust(window_size)
-        self.event_holder: Optional[EventHolder,None] = EventHolder()
+        self.event_holder: Optional[EventHolder] = EventHolder()
         self.event_holder.listen_list = EventConstants.ALL_EVENTS()
         self.has_boundaries = False
 

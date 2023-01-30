@@ -5,6 +5,7 @@ from typing import Optional
 
 from .Object import Object
 from .Sprite import Sprite
+
 from ..os.EventHolder import EventHolder,EventConstants
 from ..structures.Rect import Rect
 from ..structures.Pos import Pos
@@ -13,7 +14,7 @@ from ..structures.Color import Color,ColorConstants
 class Container(Object):
     def __init__(self,rect:Rect):
         super(Container, self).__init__(rect)
-        self.object_list :list[Optional[Sprite]] = []
+        self.object_list :list[Optional[Sprite,(Pos,pg.surface.Surface)]] = []
         self.content_surface: Optional[pg.surface.Surface] = None
 
         self.event_holder:Optional[EventHolder] = None
@@ -37,8 +38,20 @@ class Container(Object):
         self.content_surface.fill(ColorConstants.GLASS)
 
         for i in self.object_list :
-            i.render_at(self.content_surface, i.margined_rect.pos.join(
-                self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos)))
+
+
+            if i.type == Sprite:
+                at = i.margined_rect.pos.join(
+                    self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos))
+                i.render_at(self.content_surface, at)
+            elif i.type == tuple[Pos,pg.surface.Surface]:
+                print('yaya')
+                at = i[0].join(
+                    self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos))
+                self.content_surface.blit(i[1],at.join(self.left_space,self.top_space))
+            else:
+                print(i.type)
+
 
     def get_events( self ):
         mouse_pos = self.event_holder.mouse_pos

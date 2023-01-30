@@ -6,4 +6,5 @@ Object = Object.Object
 ScrollView = ScrollView.ScrollView
 Sprite = Sprite.Sprite
 TextHolder = TextHolder.TextHolder
+TextBox = TextBox.TextBox
 

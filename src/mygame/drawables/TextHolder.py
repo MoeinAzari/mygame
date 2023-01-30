@@ -1,15 +1,20 @@
 import pygame as pg
 
+from .Object import Object
+from ..structures.Rect import Rect
+from ..structures.Pos import Pos
 from ..structures.Color import Color,ColorConstants
 cc = ColorConstants
 
 from typing import Optional
 
-class TextHolder:
+class TextHolder (Object):
     __font_name = None
     __font_size = 40
 
-    def __init__(self,text:str,max_width:int,font:pg.font.Font=None):
+    def __init__(self,rect:Rect,text:str,font:pg.font.Font=None):
+        super(TextHolder, self).__init__(rect)
+        self.margin = self.border = self.padding = [0] * 4
         if font is None:
             self.font = pg.font.Font(TextHolder.__font_name,TextHolder.__font_size)
         else:
@@ -17,8 +22,8 @@ class TextHolder:
 
         self.__texts:list[str] = []
         self.text = text
-        self.max_width = max_width
-        self.surface:Optional[pg.surface.Surface] = None
+        self.max_width = self.width
+        self.text_surface:Optional[pg.surface.Surface] = None
 
         self.update()
 
@@ -29,15 +34,20 @@ class TextHolder:
         if len(self.__texts) != 0:
             height = self.font.size(self.__texts[0])[1] * len(self.__texts)
 
-        self.surface = pg.surface.Surface([width,height]).convert_alpha()
-        self.surface.fill(cc.BLUE.with_alpha(100))
+        self.text_surface = pg.surface.Surface([width,height]).convert_alpha()
+        self.text_surface.fill(cc.BLUE.with_alpha(100))
 
 
         current_height = 0
         for i in self.__texts:
             mfont = self.font.render(i,True,cc.BLACK)
-            self.surface.blit(mfont,[0,current_height])
+            self.text_surface.blit(mfont,[0,current_height])
             current_height += mfont.get_height()
+
+
+    def render( self,surface:pg.surface.Surface):
+        super(TextHolder, self).render(surface)
+        surface.blit(self.text_surface,self.content_rect.pos)
 
 
     def generate_texts( self ):
@@ -49,7 +59,8 @@ class TextHolder:
 
 
         while current != end:
-            if self.font.size(self.text[start:current+1])[0] > self.max_width:
+            if self.font.size(
+                    self.text[start:current+1])[0] > self.max_width - self.horizontal_space:
                 self.__texts.append(self.text[start:current])
                 start = current
             if current + 1 == end:
@@ -57,9 +68,13 @@ class TextHolder:
 
             current += 1
 
-    def update( self,new_text=None ):
+    def update( self,new_text=None):
+
         if new_text is not None: self.text = new_text
+        self.max_width = self.width
+
         self.generate_texts()
         self.update_surface()
+        self.margined_rect.height = self.text_surface.get_height()
 
 
