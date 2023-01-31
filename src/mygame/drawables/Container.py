@@ -41,12 +41,10 @@ class Container(Object):
 
         for i in self.object_list :
 
-
-            if type(i) in [Sprite,TextHolder,Object]:
-
-                at = i.margined_rect.pos.join(
+            at = i.margined_rect.pos.join(
                     self.content_rect.pos.transform(mult_xy=-1).join(self.objects_adjust_pos))
-                i.render_at(self.content_surface, at)
+
+            i.render_at(self.content_surface, at)
 
 
 

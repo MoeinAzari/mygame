@@ -35,7 +35,7 @@ class TextHolder (Object):
             height = self.font.size(self.__texts[0])[1] * len(self.__texts)
 
         self.text_surface = pg.surface.Surface([width,height]).convert_alpha()
-        self.text_surface.fill(cc.BLUE.with_alpha(100))
+        self.text_surface.fill(cc.BLUE.with_alpha(255))
 
 
         current_height = 0
@@ -45,10 +45,12 @@ class TextHolder (Object):
             current_height += mfont.get_height()
 
 
+
+
+
     def render( self,surface:pg.surface.Surface):
         super(TextHolder, self).render(surface)
         surface.blit(self.text_surface,self.content_rect.pos)
-
 
     def render_at( self,surface:pg.surface.Surface,at:Pos ):
         super(TextHolder, self).render_at(surface,at)
