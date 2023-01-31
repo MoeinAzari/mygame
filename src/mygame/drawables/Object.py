@@ -199,7 +199,7 @@ class Object(object) :
     @padding.setter
     def padding( self, new_padding: tuple[float, float, float, float] ) :
 
-        if any([i<0 for i in new_padding]): return
+        # if any([i<0 for i in new_padding]): return
 
         self.padding_left, self.padding_top = new_padding[:2]
         self.padding_right, self.padding_bottom = new_padding[2 :]
@@ -212,7 +212,7 @@ class Object(object) :
 
     @margin.setter
     def margin( self, new_margin: tuple[float, float, float, float] ) :
-        if any([i < 0 for i in new_margin]) : return
+        # if any([i < 0 for i in new_margin]) : return
 
         self.margin_left, self.margin_top = new_margin[:2]
         self.margin_right, self.margin_bottom = new_margin[2 :]
@@ -224,7 +224,7 @@ class Object(object) :
 
     @border.setter
     def border( self, new_border: tuple[int, int, int, int] ) :
-        if any([i < 0 for i in new_border]) : return
+        # if any([i < 0 for i in new_border]) : return
 
         self.border_left_width, self.border_top_width = new_border[:2]
         self.border_right_width, self.border_bottom_width = new_border[2 :]
