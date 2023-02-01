@@ -72,9 +72,12 @@ class TextHolder (Object):
                 self.__texts.append(self.text[start:current])
                 start = current
             if current + 1 == end:
-                self.__texts.append(self.text[start:current + 1])
+                self.__texts.append(self.text[start:current + 2])
 
             current += 1
+
+        print(self.text[current:current])
+        print(self.__texts)
 
     def update( self,new_text=None):
 

@@ -84,6 +84,10 @@ class Container(Object):
         super(Container, self).render(surface)
         surface.blit(self.content_surface,self.content_rect)
 
+    def render_at( self,surface:pg.surface.Surface,at:Pos ):
+        super(Container, self).render_at(surface, at)
+        surface.blit(self.content_surface,at
+        )
 
 
 

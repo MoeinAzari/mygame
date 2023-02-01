@@ -26,5 +26,13 @@ class TextBox(ScrollView):
 
 
 
+    def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
+        super(TextBox, self).render(surface, pos_adjust)
+        print(self.object_list)
+
+    def render_at( self,surface:pg.surface.Surface,at:Pos ):
+        super(TextBox, self).render_at(surface, at)
+        print(self.object_list)
+
 
 
