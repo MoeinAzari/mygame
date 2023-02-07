@@ -8,7 +8,7 @@ from .Sprite import Sprite
 from .TextHolder import TextHolder
 
 
-from ..os.EventHolder import EventHolder,EventConstants
+from ..my_os.EventHolder import EventHolder,EventConstants
 from ..structures.Rect import Rect
 from ..structures.Pos import Pos
 from ..structures.Color import Color,ColorConstants
