@@ -1,1 +1,1 @@
-from .src.mygame.activity import Activity
+from src.mygame.activity import Activity

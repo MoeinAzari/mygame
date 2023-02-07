@@ -1,2 +1,2 @@
-from .src.mygame.globals import functions
+from src.mygame.globals import functions
 
