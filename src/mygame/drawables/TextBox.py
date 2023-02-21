@@ -7,15 +7,17 @@ from ..structures.Rect import Rect
 
 
 class TextBox:
-    def __init__(self,text,text_width,font_path,font_size,font_color,background_color,direction):
+    def __init__(self,text,text_width,font_path,font_size,font_color,background_color,direction
+                    ,wholesome=False):
         self.font = ImageFont.truetype(font_path,font_size)
 
         self.width = text_width
         self.height = 0
         self.text = text
+        self.wholesome = wholesome
         self.texts = self.generate_texts()
-
         surface_list = []
+
 
         for i in self.texts:
 
@@ -51,16 +53,35 @@ class TextBox:
         texts = []
         start = 0
         current = 0
-        end = len(self.text) - 1
+
+        target = self.text
+        if self.wholesome:
+            target = self.text.split(" ")
+
+        end = len(target) - 1
 
 
         while current != end:
+
+            next_step = target[start:current+1]
+            current_step = target[start:current]
+
+            if self.wholesome:
+                current_step = "".join([i+" " for i in current_step])
+                next_step = "".join([i+" " for i in next_step])
+
             if self.font.getsize(
-                    self.text[start:current+1])[0] > self.width:
-                texts.append(self.text[start:current])
+                    next_step)[0] > self.width:
+                texts.append(current_step)
+
+
+
                 start = current
             if current + 1 == end:
-                texts.append(self.text[start:current + 2])
+                hopped_step = target[start:current + 2]
+                if self.wholesome:
+                    hopped_step = "".join([i+" " for i in hopped_step])
+                texts.append(hopped_step)
 
             current += 1
 
