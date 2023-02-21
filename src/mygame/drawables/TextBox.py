@@ -9,10 +9,12 @@ from ..structures.Rect import Rect
 class TextBox:
     def __init__(self,text,text_width,font_path,font_size,font_color,background_color,direction
                     ,wholesome=False):
+
+
         self.font = ImageFont.truetype(font_path,font_size)
 
-        self.width = text_width
-        self.height = 0
+        self.text_width = text_width
+        self.text_height = 0
         self.text = text
         self.wholesome = wholesome
         self.texts = self.generate_texts()
@@ -33,17 +35,17 @@ class TextBox:
             surface_list.append(surface)
 
 
-        self.surface = pg.surface.Surface((self.width,self.height)).convert_alpha()
-        self.surface.fill(background_color)
+        self.text_surface = pg.surface.Surface((self.text_width,self.text_height)).convert_alpha()
+        self.text_surface.fill(background_color)
         y = 0
 
         for i in surface_list:
             if direction == "rtl" :
-                pos = (self.width-i.get_width(),y)
+                pos = (self.text_width - i.get_width(),y)
             else:
                 pos = (0,y)
 
-            self.surface.blit(i,pos)
+            self.text_surface.blit(i,pos)
             y += i.get_height()
 
 
@@ -71,7 +73,7 @@ class TextBox:
                 next_step = "".join([i+" " for i in next_step])
 
             if self.font.getsize(
-                    next_step)[0] > self.width:
+                    next_step)[0] > self.text_width:
                 texts.append(current_step)
 
 
@@ -85,9 +87,9 @@ class TextBox:
 
             current += 1
 
-        self.height = 0
+        self.text_height = 0
         for i in texts:
-            self.height += self.font.getsize(i)[1]
+            self.text_height += self.font.getsize(i)[1]
 
 
         return texts
@@ -95,4 +97,4 @@ class TextBox:
 
 
     def render( self,surface,at ):
-        surface.blit(self.surface,at)
+        surface.blit(self.text_surface,at)
