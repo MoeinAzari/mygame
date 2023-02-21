@@ -1,38 +1,77 @@
 import pygame as pg
+from PIL import Image,ImageFont,ImageDraw
 
+from ..structures.Color import Color
 from ..structures.Pos import Pos
 from ..structures.Rect import Rect
-from ..structures.Color import Color
-from .ScrollView import ScrollView
-from .TextHolder import TextHolder
-
-class TextBox(ScrollView):
-
-    def __init__(self,rect:Rect,text:str):
-
-        self.text_holder = TextHolder(rect.copy(),text)
-
-        super(TextBox, self).__init__(rect)
-        self.object_list.append(self.text_holder)
-
-        self.update()
 
 
+class TextBox:
+    def __init__(self,text,text_width,font_path,font_size,font_color,background_color,direction):
+        self.font = ImageFont.truetype(font_path,font_size)
 
-    def update( self  ):
-        self.text_holder.max_width = self.text_holder.width = self.content_rect.width
-        self.text_holder.update()
-        super(TextBox, self).update()
+        self.width = text_width
+        self.height = 0
+        self.text = text
+        self.texts = self.generate_texts()
+
+        surface_list = []
+
+        for i in self.texts:
+
+            image = Image.new("RGBA",self.font.getsize(i),(0,0,0,0))
+
+            draw = ImageDraw.Draw(image)
+
+            draw.text((0,0),i,font_color,font=self.font,direction=direction)
+
+            surface = pg.image.fromstring(image.tobytes(),image.size,
+                image.mode) # NOQA
+
+            surface_list.append(surface)
+
+
+        self.surface = pg.surface.Surface((self.width,self.height)).convert_alpha()
+        self.surface.fill(background_color)
+        y = 0
+
+        for i in surface_list:
+            if direction == "rtl" :
+                pos = (self.width-i.get_width(),y)
+            else:
+                pos = (0,y)
+
+            self.surface.blit(i,pos)
+            y += i.get_height()
 
 
 
-    def render( self,surface:pg.surface.Surface,pos_adjust:Pos = None ):
-        super(TextBox, self).render(surface, pos_adjust)
-        print(self.object_list)
+    def generate_texts( self ):
 
-    def render_at( self,surface:pg.surface.Surface,at:Pos ):
-        super(TextBox, self).render_at(surface, at)
-        print(self.object_list)
-
+        texts = []
+        start = 0
+        current = 0
+        end = len(self.text) - 1
 
 
+        while current != end:
+            if self.font.getsize(
+                    self.text[start:current+1])[0] > self.width:
+                texts.append(self.text[start:current])
+                start = current
+            if current + 1 == end:
+                texts.append(self.text[start:current + 2])
+
+            current += 1
+
+        self.height = 0
+        for i in texts:
+            self.height += self.font.getsize(i)[1]
+
+
+        return texts
+
+
+
+    def render( self,surface,at ):
+        surface.blit(self.surface,at)
