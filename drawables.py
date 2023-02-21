@@ -1,11 +1,11 @@
 from .src.mygame.drawables import Container,Menu,MSprite,Object,Page
-from .src.mygame.drawables import ScrollView,Sprite,TextBox,TextHolder
+from .src.mygame.drawables import ScrollView,Sprite,TextBox
 
 Container = Container.Container
 Object = Object.Object
 ScrollView = ScrollView.ScrollView # using these led to typing problems with ide
 Sprite = Sprite.Sprite
-TextHolder = TextHolder.TextHolder
+
 TextBox = TextBox.TextBox
 
 

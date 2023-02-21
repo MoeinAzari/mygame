@@ -5,7 +5,7 @@ from typing import Optional
 
 from .Object import Object
 from .Sprite import Sprite
-from .TextHolder import TextHolder
+
 
 
 from ..my_os.EventHolder import EventHolder,EventConstants
