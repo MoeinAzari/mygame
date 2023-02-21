@@ -1,6 +1,6 @@
 import pygame as pg
 
-import my_os
+from .. import my_os
 import pathlib
 from ..structures.Rect import Rect
 from ..structures.Pos import Pos

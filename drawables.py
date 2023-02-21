@@ -1,5 +1,5 @@
-from src.mygame.drawables import Container,Menu,MSprite,Object,Page
-from src.mygame.drawables import ScrollView,Sprite,TextBox,TextHolder
+from .src.mygame.drawables import Container,Menu,MSprite,Object,Page
+from .src.mygame.drawables import ScrollView,Sprite,TextBox,TextHolder
 
 Container = Container.Container
 Object = Object.Object

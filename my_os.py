@@ -1,4 +1,4 @@
-from src.mygame.my_os import EventHolder,Window
+from .src.mygame.my_os import EventHolder,Window
 
 Window = Window.Window
 EventConstants = EventHolder.EventConstants

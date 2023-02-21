@@ -1,4 +1,4 @@
-from src.mygame.structures import Enumerator,Color,Constants,Pos,Rect,Surface
+from .src.mygame.structures import Enumerator,Color,Constants,Pos,Rect,Surface
 
 Rect = Rect.Rect
 Enumerator = Enumerator.Enumerator
