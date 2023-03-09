@@ -6,9 +6,9 @@ from typing import Optional
 from ..structures.Color import Color
 from ..structures.Pos import Pos
 from ..structures.Rect import Rect
+from .Object import Object
 
-
-class TextBox :
+class TextBox(Object) :
 
     def __init__( self, text, text_width, font_path, font_size, font_color, background_color,
             direction, wholesome=False ) :
@@ -27,7 +27,7 @@ class TextBox :
 
         self.generate_texts()
         self.generate_surface()
-
+        super().__init__(Rect(0,0,self.text_width,self.text_height))
 
     def update_text( self,new_text=None,new_font_color=None,new_font_bg_color=None,
             new_font_width=None ):
@@ -116,6 +116,13 @@ class TextBox :
             self.text_surface.blit(i, pos)
             y += i.get_height()
 
+    def update( self ):
+        super(TextBox, self).update()
+        self.width = self.text_width + self.horizontal_space
+        self.height = self.text_height + self.vertical_space
 
-    def render( self, surface, at ) :
-        surface.blit(self.text_surface, at)
+
+
+    def render( self, surface ) :
+        super(TextBox, self).render(surface)
+        surface.blit(self.text_surface, self.content_rect.pos)
