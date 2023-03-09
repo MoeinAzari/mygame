@@ -5,7 +5,7 @@ from typing import Optional
 
 from .Object import Object
 from .Sprite import Sprite
-
+from .TextBox import TextBox
 
 
 from ..my_os.EventHolder import EventHolder,EventConstants
@@ -16,7 +16,7 @@ from ..structures.Color import Color,ColorConstants
 class Container(Object):
     def __init__(self,rect:Rect):
         super(Container, self).__init__(rect)
-        self.object_list :list[Optional[Sprite,TextHolder]] = []
+        self.object_list :list[Optional[Sprite,TextBox]] = []
         self.content_surface: Optional[pg.surface.Surface] = None
 
         self.event_holder:Optional[EventHolder] = None

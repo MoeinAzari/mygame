@@ -10,7 +10,7 @@ from .Object import Object
 
 class TextBox(Object) :
 
-    def __init__( self, text, text_width, font_path, font_size, font_color, background_color,
+    def __init__( self, text, text_pos,text_width, font_path, font_size, font_color, background_color,
             direction, wholesome=False ) :
 
         self.font = ImageFont.truetype(font_path, font_size)
@@ -27,7 +27,7 @@ class TextBox(Object) :
 
         self.generate_texts()
         self.generate_surface()
-        super().__init__(Rect(0,0,self.text_width,self.text_height))
+        super().__init__(Rect(text_pos.x,text_pos.y,self.text_width,self.text_height))
 
     def update_text( self,new_text=None,new_font_color=None,new_font_bg_color=None,
             new_font_width=None ):
@@ -93,12 +93,13 @@ class TextBox(Object) :
         surface_list = []
 
         for i in self.texts :
+            if i == "": continue # temporary fix
+
             image = Image.new("RGBA", self.font.getsize(i), (0, 0, 0, 0))
 
             draw = ImageDraw.Draw(image)
 
             draw.text((0, 0), i, self.font_color, font=self.font, direction=self.font_direction)
-
             surface = pg.image.fromstring(image.tobytes(), image.size, image.mode)  # NOQA
 
             surface_list.append(surface)
@@ -117,6 +118,8 @@ class TextBox(Object) :
             y += i.get_height()
 
     def update( self ):
+        self.generate_texts()
+        self.generate_surface()
         super(TextBox, self).update()
         self.width = self.text_width + self.horizontal_space
         self.height = self.text_height + self.vertical_space
@@ -126,3 +129,7 @@ class TextBox(Object) :
     def render( self, surface ) :
         super(TextBox, self).render(surface)
         surface.blit(self.text_surface, self.content_rect.pos)
+
+    def render_at( self,surface:pg.surface.Surface,at:Pos ):
+        super(TextBox, self).render_at(surface,at)
+        surface.blit(self.text_surface,[at.x + self.left_space,at.y + self.top_space])

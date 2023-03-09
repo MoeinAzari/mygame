@@ -11,7 +11,12 @@ class TextView(ScrollView):
         super(TextView, self).__init__(rect)
 
         self.text_box_list = [text_box]
+        self.object_list = self.text_box_list.copy()
+        self.update()
 
 
     def add_text_box( self , text_box:TextBox):
         self.text_box_list.append(text_box)
+        self.object_list = self.text_box_list.copy()
+
+
