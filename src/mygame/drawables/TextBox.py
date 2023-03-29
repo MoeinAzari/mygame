@@ -8,14 +8,23 @@ from ..structures.Pos import Pos
 from ..structures.Rect import Rect
 from .Object import Object
 
+
 class TextBox(Object) :
+    image_fonts = {}
 
-    def __init__( self, text, text_pos,text_width, font_path, font_size, font_color, background_color,
-            direction, wholesome=False ) :
 
-        self.font = ImageFont.truetype(font_path, font_size)
+    def __init__( self, text, text_pos, text_width, font_path, font_size, font_color,
+            background_color, direction, wholesome=False, oneliner=False ) :
+        if font_path not in TextBox.image_fonts :
+            self.font = ImageFont.truetype(font_path, font_size)
+            TextBox.image_fonts[font_path] = self.font
+        else :
+            self.font = TextBox.image_fonts[font_path]
+
         self.font_color = font_color
+
         self.font_background_color = background_color
+
         self.font_direction = direction
         self.text_width = text_width
         self.text_height = 0
@@ -25,30 +34,38 @@ class TextBox(Object) :
 
         self.text_surface: Optional[pg.surface.Surface] = None
 
-        self.generate_texts()
-        self.generate_surface()
-        super().__init__(Rect(text_pos.x,text_pos.y,self.text_width,self.text_height))
+        if not oneliner :
+            self.generate_texts()
+            self.generate_surface()
+        else :
+            image = Image.new("RGBA", self.font.getsize(self.text), self.font_background_color)
 
-    def update_text( self,new_text=None,new_font_color=None,new_font_bg_color=None,
-            new_font_width=None ):
+            draw = ImageDraw.Draw(image)
 
-        if new_text is not None:
+            draw.text((0, 0), self.text, self.font_color, font=self.font,
+                direction=self.font_direction)
+
+            self.text_surface = pg.image.fromstring(image.tobytes(), image.size, image.mode)  # NOQA
+
+        super().__init__(Rect(text_pos.x, text_pos.y, self.text_width, self.text_height))
+
+
+    def update_text( self, new_text=None, new_font_color=None, new_font_bg_color=None,
+            new_font_width=None ) :
+        if new_text is not None :
             self.text = new_text
 
-        if new_font_color is not None:
+        if new_font_color is not None :
             self.font_color = new_font_color
 
-        if new_font_bg_color is not None:
+        if new_font_bg_color is not None :
             self.font_background_color = new_font_bg_color
 
-        if new_font_width is not None:
+        if new_font_width is not None :
             self.text_width = new_font_width
-
 
         self.generate_texts()
         self.generate_surface()
-
-
 
 
     def generate_texts( self ) :
@@ -93,7 +110,7 @@ class TextBox(Object) :
         surface_list = []
 
         for i in self.texts :
-            if i == "": continue # temporary fix
+            if i == "" : continue  # temporary fix
 
             image = Image.new("RGBA", self.font.getsize(i), (0, 0, 0, 0))
 
@@ -117,7 +134,8 @@ class TextBox(Object) :
             self.text_surface.blit(i, pos)
             y += i.get_height()
 
-    def update( self ):
+
+    def update( self ) :
         self.generate_texts()
         self.generate_surface()
         super(TextBox, self).update()
@@ -125,11 +143,11 @@ class TextBox(Object) :
         self.height = self.text_height + self.vertical_space
 
 
-
     def render( self, surface ) :
         super(TextBox, self).render(surface)
         surface.blit(self.text_surface, self.content_rect.pos)
 
-    def render_at( self,surface:pg.surface.Surface,at:Pos ):
-        super(TextBox, self).render_at(surface,at)
-        surface.blit(self.text_surface,[at.x + self.left_space,at.y + self.top_space])
+
+    def render_at( self, surface: pg.surface.Surface, at: Pos ) :
+        super(TextBox, self).render_at(surface, at)
+        surface.blit(self.text_surface, [at.x + self.left_space, at.y + self.top_space])
